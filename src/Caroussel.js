@@ -22,25 +22,29 @@ export const Caroussel = () => {
     setPosition(position===0?num_imgs:position-1);
   }
 
+  const PlotImages = () =>
+    images.map((image,index) =>{
+      if (index===position){
+        return <img src={image.default} key = {index} alt={`napoleon${index+1} fate`}/>
+      } else {
+        return null
+      }})
+
+  const PlotDotIndicator = () =>
+    images.map((_,index) => {
+      if (index===position){
+        return <VscCircleFilled/>
+      }else {
+        return <VscCircleOutline/>
+      }
+      })
+
   return (
     <div className='slider'>
       <FcPrevious className="arrow left" onClick={previousPosition}/>
       <FcNext className="arrow right" onClick={nextPosition}/>
-      {images.map((image,index) =>{
-        if (index===position){
-          return <img src={image.default} key = {index} alt={`napoleon${index+1} fate`}/>
-        } else {
-          return null
-        }})
-      }
-      {images.map((_,index) => {
-        if (index===position){
-          return <VscCircleFilled/>
-        }else {
-          return <VscCircleOutline/>
-        }
-        })
-      }
+      <PlotImages/>
+      <PlotDotIndicator/>
     </div>
   )
 }
