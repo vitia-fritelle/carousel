@@ -23,6 +23,7 @@ export const Caroussel = () => {
   }
 
   const PlotImages = () =>
+    //Elemento para imprimir as imagens na tela
     images.map((image,index) =>{
       if (index===position){
         return <img src={image.default} key = {index} alt={`napoleon${index+1} fate`}/>
@@ -31,6 +32,7 @@ export const Caroussel = () => {
       }})
 
   const PlotDotIndicator = () =>
+    //Elemento para imprimir os pontos na tela
     images.map((_,index) => {
       if (index===position){
         return <VscCircleFilled/>
