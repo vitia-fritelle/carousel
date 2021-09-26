@@ -16,10 +16,6 @@
     text-decoration: none;
 }
 
-.footer a:link {
-    color:#fff;
-}
-
-.footer a:visited {
+.footer a:link, .footer a:visited {
     color:#fff;
 }
