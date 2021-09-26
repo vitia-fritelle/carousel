@@ -24,66 +24,77 @@ const medias = [...images,video];
 
 const num_medias = medias.length-1;
 
-export const Caroussel = () => {
-
+const Caroussel = () => {
+  //Elemento de slider Caroussel
   const [position,setPosition] = useState(0);
-
-  const nextPosition = () => {
-    //Função para andar para frente no Caroussel
-    setPosition(position===num_medias?0:position+1);
-  }
-
-  const previousPosition = () => {
-    //Função para andar para trás no Caroussel
-    setPosition(position===0?num_medias:position-1);
-  }
-
-  const DotIndicator = ({num, setPosition}) => {
-    //Elemento que imprime os dots e adiciona a funcionalidade setSlide
-    const setSlide = () => {
-      //Função para selecionar o slide pelos dots
-      setPosition(num);
-    }
-    if (num===position){
-      return <VscCircleFilled className="dots"/>
-    }else {
-      return <VscCircleOutline className="dots" onClick={setSlide}/>
-    }
-  }
-
-  const PlotSlides = () =>
-    //Elemento para imprimir os slides na tela
-    medias.map(({src,type},index) =>{
-      if (index===position){
-        if (type==="image/jpg"){
-          return <img src={src} className="slide" key={index} alt={`napoleon${index+1} fate`}/>
-        } else {
-          return (
-          <video controls>
-            <source src={src} className="slide" type={type} key={index}/>
-            Your browser does not support the video tag.
-          </video>
-          )
-        }
-      } else {
-        return null
-      }})
-
-  const PlotDotIndicator = () =>
-    //Elemento para imprimir os pontos na tela
-    <div className="indicator">
-      {medias.map((_,index) => <DotIndicator num={index} setPosition={setPosition} />)}
-    </div>
 
   return (
     <div className='slider'>
-      <FcPrevious className="arrow left" onClick={previousPosition}/>
-      <FcNext className="arrow right" onClick={nextPosition}/>
-      <PlotSlides/>
-      <PlotDotIndicator/>
+      <ArrowLeft position={position} setPosition={setPosition}/>
+      <ArrowRight position={position} setPosition={setPosition}/>
+      <PlotSlides position={position} slides={medias}/>
+      <PlotDotIndicator position={position} setPosition={setPosition} slides={medias}/>
     </div>
   )
 }
 
+const ArrowLeft = ({position,setPosition}) => {
+  //Elemento de flecha para esquerda
+  const previousPosition = () => {
+    //Função para andar para trás no Caroussel
+    setPosition(position===0?num_medias:position-1);
+  }
+  return (
+    <FcPrevious className="arrow left" onClick={previousPosition}/>
+  )
+}
 
+const ArrowRight = ({position,setPosition}) => {
+  //Elemento de flecha para direita
+  const nextPosition = () => {
+    //Função para andar para frente no Caroussel
+    setPosition(position===num_medias?0:position+1);
+  }
+  return (
+    <FcNext className="arrow right" onClick={nextPosition}/>
+  )
+}
 
+const PlotSlides = ({position,slides}) =>
+  //Elemento para imprimir os slides na tela
+  slides.map(({src,type},index) =>{
+    if (index===position){
+      if (type==="image/jpg"){
+        return <img src={src} className="slide" key={index} alt={`napoleon${index+1} fate`}/>
+      } else {
+        return (
+        <video controls>
+          <source src={src} className="slide" type={type} key={index}/>
+          Your browser does not support the video tag.
+        </video>
+        )
+      }
+    } else {
+      return null
+    }})
+
+const DotIndicator = ({num,position,setPosition}) => {
+  //Elemento que imprime os dots e adiciona a funcionalidade setSlide
+  const setSlide = () => {
+    //Função para selecionar o slide pelos dots
+    setPosition(num);
+  }
+  if (num===position){
+    return <VscCircleFilled className="dots"/>
+  }else {
+    return <VscCircleOutline className="dots" onClick={setSlide}/>
+  }
+}
+
+const PlotDotIndicator = ({position,setPosition,slides}) =>
+  //Elemento para imprimir os pontos na tela
+  <div className="indicator">
+    {slides.map((_,index) => <DotIndicator num={index} position={position} setPosition={setPosition} />)}
+  </div>
+
+export default Caroussel
