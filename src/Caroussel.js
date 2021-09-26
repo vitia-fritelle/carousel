@@ -24,6 +24,7 @@ const medias = [...images,video];
 
 const num_medias = medias.length-1;
 
+
 const Caroussel = ({interval}) => {
   //Elemento de slider Caroussel
 
@@ -39,23 +40,43 @@ const Caroussel = ({interval}) => {
     setPosition(position===num_medias?0:position+1);
   }
 
-  const HandlingSetInterval = () => {
-      useEffect(() => {
-        const timer = setInterval(nextPosition, interval);
-        return () => {clearInterval(timer);}
-      })
-      return null
-  }
-  
   return (
     <div className='slider'>
-      {interval && <HandlingSetInterval/>}
+      {interval && <HandlingSetInterval interval={interval} next={nextPosition} prev={previousPosition} position={position}/>}
       <ArrowLeft previous={previousPosition}/>
       <ArrowRight next={nextPosition}/>
       <PlotSlides position={position} slides={medias}/>
       <PlotDotIndicator position={position} setPosition={setPosition} slides={medias}/>
     </div>
   )
+}
+
+const HandlingSetInterval = ({interval,next,position,prev}) => {
+  //Elemento utilizado para manipular a aplicação do Hook ou não
+  //Também é utilizado para adicionar algumas funcionalidades a mais 
+  //de como percorrer o Carousel
+  const [flag,setFlag] = useState(0);
+  
+  const flagBearer = () =>{
+    if(position===0) setFlag(0);
+    else if (position===num_medias) setFlag(1);
+  }
+
+  const upDownPosition = () => {
+    //Função para andar para frente e para trás no Carousel
+    if (flag===0) {
+      next();
+    } else if (flag===1) {
+      prev();
+    }
+  }
+
+  useEffect(() => {
+    flagBearer();
+    const timer = setInterval(upDownPosition, interval);
+    return () => {clearInterval(timer);}
+  })
+  return null
 }
 
 const ArrowLeft = ({previous}) => {
@@ -74,6 +95,8 @@ const ArrowRight = ({next}) => {
 
 const PlotSlides = ({position,slides}) =>
   //Elemento para imprimir os slides na tela
+  //Caso queira trocar o interior dos slides, 
+  //devo mexer aqui e fazer provavelmente um novo .map
   slides.map(({src,type},index) =>{
     if (index===position){
       if (type==="image/jpg"){
