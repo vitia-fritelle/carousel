@@ -6,7 +6,7 @@ import './index.css'
 
 ReactDOM.render(
     <>
-      <Caroussel />
+      <Caroussel interval={1000}/>
       <Footer/>
     </>,
   document.getElementById('root')
