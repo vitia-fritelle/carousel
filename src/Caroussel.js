@@ -6,7 +6,7 @@ import arcdetriomphe from './assets/videos/napoleon00.mp4'
 
 const importAll = (r) => r.keys().map(r); //Função para importar todos as imagens
 
-const importImages = importAll(require.context('./assets/images', false, /\.(jpg)$/)); //Importo todas as imagens jpg
+const importImages = importAll(require.context('./assets/images/napoleao', false, /\.(jpg)$/)); //Importo todas as imagens jpg
 
 const images = importImages.reduce((lista,image)=>{
   lista.push(
