@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Caroussel from './Caroussel';
+import Carousel from './Carousel';
 import Footer from './Footer';
 import './index.css'
 
 ReactDOM.render(
     <>
-      <Caroussel interval={1000}/>
+      <Carousel interval={1000} direction='random' />
       <Footer/>
     </>,
   document.getElementById('root')
