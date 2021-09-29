@@ -3,23 +3,22 @@ import {useEffect, useState} from 'react';
 import {FcNext, FcPrevious} from 'react-icons/fc';
 import {VscCircleFilled, VscCircleOutline} from 'react-icons/vsc'
 
-
 const Carousel = ({interval, direction='up', slides}) => {
   //Elemento de slider Carousel
 
-  const num_medias = slides.length-1;
+  const num_slides = slides.length-1;
 
   const [position,setPosition] = useState(0);
   const [flag,setFlag] = useState(0);
 
   const previousPosition = () => {
     //Função para andar para trás no Carousel
-    setPosition(position===0?num_medias:position-1);
+    setPosition(position===0?num_slides:position-1);
   }
 
   const nextPosition = () => {
     //Função para andar para frente no Carousel
-    setPosition(position===num_medias?0:position+1);
+    setPosition(position===num_slides?0:position+1);
   }
 
   const upDownPosition = () => {
@@ -36,7 +35,7 @@ const Carousel = ({interval, direction='up', slides}) => {
     const getRandomIntInclusive = () => {
       //Função que escolhe um número aleatório entre min e max inclusive
       const min = Math.ceil(0);
-      const max = Math.floor(num_medias);
+      const max = Math.floor(num_slides);
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
     setPosition(getRandomIntInclusive);
@@ -53,11 +52,44 @@ const Carousel = ({interval, direction='up', slides}) => {
     const flagBearer = () =>{
       //Função para levantar ou abaixar a flag
       if(position===0) setFlag(0);
-      else if (position===num_medias) setFlag(1);
-    }
+      else if (position===num_slides) setFlag(1);
+    };
     (direction==='updown') && flagBearer();
-  })
+  },[position])
 
+  const useKeyPress = (targetKey) => {
+    //Hook personalizado para detectar a tecla pressionada
+    const [keyPressed, setKeyPressed] = useState(false);
+  
+    const downHandler = ({ key }) => {
+      if (key === targetKey) {setKeyPressed(true);}
+    }
+  
+    const upHandler = ({ key }) => {
+      if (key === targetKey) {setKeyPressed(false);}
+    };
+  
+    useEffect(() => {
+      window.addEventListener("keydown", downHandler);
+      window.addEventListener("keyup", upHandler);
+  
+      return () => {
+        window.removeEventListener("keydown", downHandler);
+        window.removeEventListener("keyup", upHandler);
+      };
+    });
+  
+    return keyPressed;
+  };
+
+  const rightPress = useKeyPress("ArrowRight");
+  const leftPress = useKeyPress("ArrowLeft");
+
+  useEffect(() => {
+    if (rightPress) {nextPosition();}
+    else if (leftPress) {previousPosition();}
+  },[rightPress,leftPress]);
+  
   return (
     <div className='slider'>
       {interval && <HandlingSetInterval interval={interval} action={action[direction]}/>}
