@@ -4,6 +4,7 @@ import {FcNext, FcPrevious} from 'react-icons/fc';
 import {VscCircleFilled, VscCircleOutline} from 'react-icons/vsc'
 
 const Carousel = ({interval, direction='up', slides}) => {
+
   //Elemento de slider Carousel
 
   const num_slides = slides.length-1;
@@ -13,19 +14,19 @@ const Carousel = ({interval, direction='up', slides}) => {
 
   const previousPosition = () => {
     //Função para andar para trás no Carousel
-    setPosition(position===0?num_slides:position-1);
+    setPosition(position === 0?num_slides:position-1);
   }
 
   const nextPosition = () => {
     //Função para andar para frente no Carousel
-    setPosition(position===num_slides?0:position+1);
+    setPosition(position === num_slides?0:position+1);
   }
 
   const upDownPosition = () => {
     //Função para andar para frente e para trás no Carousel
-    if (flag===0) {
+    if (!flag) {
       nextPosition();
-    } else if (flag===1) {
+    } else {
       previousPosition();
     }
   }
@@ -36,7 +37,7 @@ const Carousel = ({interval, direction='up', slides}) => {
       //Função que escolhe um número aleatório entre min e max inclusive
       const min = Math.ceil(0);
       const max = Math.floor(num_slides);
-      return Math.floor(Math.random() * (max - min + 1)) + min;
+      return Math.floor(Math.random() * (max-min+1)) + min;
     }
     setPosition(getRandomIntInclusive);
   }
@@ -49,23 +50,30 @@ const Carousel = ({interval, direction='up', slides}) => {
   }
 
   useEffect(() => {
+
     const flagBearer = () =>{
+
       //Função para levantar ou abaixar a flag
-      if(position===0) setFlag(0);
-      else if (position===num_slides) setFlag(1);
+      if (!position){
+        setFlag(0);
+      } 
+      else if (position === num_slides){
+        setFlag(1);
+      } 
     };
-    (direction==='updown') && flagBearer();
+    direction === 'updown' && flagBearer();
   },[position])
 
   const useKeyPress = (targetKey) => {
+
     //Hook personalizado para detectar a tecla pressionada
     const [keyPressed, setKeyPressed] = useState(false);
   
-    const downHandler = ({ key }) => {
+    const downHandler = ({key}) => {
       if (key === targetKey) {setKeyPressed(true);}
     }
   
-    const upHandler = ({ key }) => {
+    const upHandler = ({key}) => {
       if (key === targetKey) {setKeyPressed(false);}
     };
   
@@ -86,13 +94,19 @@ const Carousel = ({interval, direction='up', slides}) => {
   const leftPress = useKeyPress("ArrowLeft");
 
   useEffect(() => {
-    if (rightPress) {nextPosition();}
-    else if (leftPress) {previousPosition();}
+    if (rightPress){
+      nextPosition();
+    }
+    else if (leftPress){
+      previousPosition();
+    }
   },[rightPress,leftPress]);
   
   return (
     <div className='slider'>
-      {interval && <HandlingSetInterval interval={interval} action={action[direction]}/>}
+      {interval && <HandlingSetInterval 
+                    interval={interval} 
+                    action={action[direction]}/>}
       <ArrowLeft previous={previousPosition}/>
       <ArrowRight next={nextPosition}/>
       <PlotSlides position={position} slides={slides}/>
@@ -105,6 +119,7 @@ const Carousel = ({interval, direction='up', slides}) => {
 }
 
 const HandlingSetInterval = ({interval,action}) => {
+
   //Elemento utilizado para manipular a aplicação do Hook useEffect
   useEffect(() => {
     const timer = setInterval(action, interval);
@@ -113,28 +128,39 @@ const HandlingSetInterval = ({interval,action}) => {
   return null
 }
 
-const ArrowLeft = ({previous}) => <FcPrevious className="arrow left" onClick={previous}/>
-  //Elemento de flecha para esquerda
+const ArrowLeft = ({previous}) => <FcPrevious 
+                                   className="arrow left" 
+                                   onClick={previous}/>
 
-const ArrowRight = ({next}) => <FcNext className="arrow right" onClick={next}/>
-  //Elemento de flecha para direita
+  // Elemento de flecha para esquerda
+
+const ArrowRight = ({next}) => <FcNext 
+                                className="arrow right" 
+                                onClick={next}/>
+
+  // Elemento de flecha para direita
     
 const PlotSlides = ({position,slides}) => slides[position]
-  //Elemento para imprimir os slides na tela
+
+  // Elemento para imprimir os slides na tela
   
 const DotIndicator = ({num,position,setPosition}) => {
-  //Elemento que imprime os dots e adiciona a funcionalidade setSlide
+
+  // Elemento que imprime os dots e adiciona a funcionalidade setSlide
+
   const setSlide = () => {setPosition(num);}
-    //Função para selecionar o slide pelos dots
-  if (num===position){
+
+  // Função para selecionar o slide pelos dots
+  if (num === position){
     return <VscCircleFilled className="dots"/>
-  }else {
+  }else{
     return <VscCircleOutline className="dots" onClick={setSlide}/>
   }
 }
 
 const PlotDotIndicator = ({position,setPosition,slides}) =>
-  //Elemento para imprimir os pontos na tela
+
+  // Elemento para imprimir os pontos na tela
   <div className="indicator">
     {slides.map((_,index) => 
     <DotIndicator 
