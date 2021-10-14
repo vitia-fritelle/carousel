@@ -11,6 +11,7 @@ const Carousel = ({interval, direction='up', slides}) => {
 
   const [position,setPosition] = useState(0);
   const [flag,setFlag] = useState(0);
+  const [hovering,setHovering] = useState(false);
 
   const previousPosition = () => {
     //Função para andar para trás no Carousel
@@ -61,7 +62,7 @@ const Carousel = ({interval, direction='up', slides}) => {
         setFlag(1);
       } 
     };
-    direction === 'updown' && flagBearer();
+    (direction === 'updown') && flagBearer();
   },[position])
 
   const useKeyPress = (targetKey) => {
@@ -103,10 +104,14 @@ const Carousel = ({interval, direction='up', slides}) => {
   },[rightPress,leftPress]);
   
   return (
-    <div className='slider'>
+    <div 
+     className='slider' 
+     onMouseEnter={() => setHovering(true)} 
+     onMouseLeave={() => setHovering(false)} >
       {interval && <HandlingSetInterval 
                     interval={interval} 
-                    action={action[direction]}/>}
+                    action={action[direction]}
+                    onHover={hovering}/>}
       <ArrowLeft previous={previousPosition}/>
       <ArrowRight next={nextPosition}/>
       <PlotSlides position={position} slides={slides}/>
@@ -118,11 +123,12 @@ const Carousel = ({interval, direction='up', slides}) => {
   )
 }
 
-const HandlingSetInterval = ({interval,action}) => {
+const HandlingSetInterval = ({interval,action,onHover}) => {
 
-  //Elemento utilizado para manipular a aplicação do Hook useEffect
+  // Elemento utilizado para controlar
+  // a troca de slide automática
   useEffect(() => {
-    const timer = setInterval(action, interval);
+    const timer = !onHover && setInterval(action, interval);
     return () => {clearInterval(timer);}
   })
   return null
