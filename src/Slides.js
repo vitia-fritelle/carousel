@@ -1,5 +1,5 @@
 import arcdetriomphe from './assets/videos/napoleon00.mp4'
-import {useEffect, useRef} from 'react';
+import {useState, useEffect, useRef} from 'react';
 
 // Função para importar todos as imagens
 const importAll = (r) => r.keys().map(r); 
@@ -25,16 +25,19 @@ const medias = [...images,video];
 
 const Video = ({src, type, index, isAutoPlay}) => {
   
+  const [play, setPlay] = useState(isAutoPlay)
+
   const playRef = useRef();
 
   useEffect(() => {
-    if (isAutoPlay && playRef.current) {
+    if (play && playRef.current) {
       playRef.current.play();
     }
-  }, [isAutoPlay]);
+    return () => setPlay(false)
+  }, [play]);
   return (
     <>
-      <video className="slide" ref={playRef}>
+      <video className="slide" ref={playRef} onClick={() => {setPlay(true)}} >
         <source src={src} type={type} key={index}/>
         Your browser does not support the video tag.
       </video>
